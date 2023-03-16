@@ -1,12 +1,16 @@
 prompt = "Type add, show, edit, complete, or exit:"
 
-def get_todos():
-    with open('Files/todos.txt', 'r') as file_local:
-                todos_local = file_local.readlines()
-                 # This creates a list by reading what is on that file. The benefit of using with and as is that you do not need close the file. (As file_local works like "file =")
+def get_todos(filepath):
+    with open(filepath, 'r') as file_local:
+        todos_local = file_local.readlines()
+         # This creates a list by reading what is on that file. The benefit of using with and as is that you do not need close the file. (As file_local works like "file =")
     return todos_local
 
-            
+def write_todos(filepath, todos_arg):
+     with open(filepath, 'w') as file:
+            file.writelines(todos_arg)
+
+
 while True:
     user_action = input(prompt)
     user_action = user_action.strip()
@@ -17,17 +21,16 @@ while True:
         todo = user_action[4:]
         # This is a list slice 
 
-        todos = get_todos()
+        todos = get_todos('todos.txt')
            
-        todos.append(todo + '\n') 
+        todos.append(todo + '\n')  
 
-        with open('Files/todos.txt', 'w') as file:
-            file.writelines(todos)
+        write_todos('todos.txt', todos)
         
     elif user_action.startswith("show"):
     # elif stops the program from checking these blocks of code when it executes one
 
-        todos = get_todos()
+        todos = get_todos('todos.txt')
 
         # new_todos = [item.strip('\n') for item in todos]
         # This is a list comprehension. It works like a for & in
@@ -46,13 +49,12 @@ while True:
             # print(number) 
             number = number - 1
 
-            todos = get_todos()
+            todos = get_todos('todos.txt')
 
             new_todo = input("Enter a new todo: ")
             todos[number] = new_todo
 
-            with open('Files/todos.txt', 'w') as file:
-                file.writelines(todos)
+            write_todos('todos.txt', todos)
         except ValueError:
             print("Your command is not valid.")
             continue
@@ -61,14 +63,13 @@ while True:
         try:
             number = int(user_action[9:])
 
-            todos = get_todos()
+            todos = get_todos('todos.txt')
             index = number - 1
             todo_to_remove = todos[index].strip('\n')
             todos.pop(index)
             # Pop removes an item using its index. 
 
-            with open('Files/todos.txt', 'w') as file:
-                file.writelines(todos)
+            write_todos('todos.txt', todos)
             
             message = f"Todo {todo_to_remove} was removed from the list"
             print(message)
