@@ -8,10 +8,14 @@ add_button = sg.Button("Add")
 list_box = sg.Listbox(values=functions.get_todos(), key="todos", 
                       enable_events=True, size=[45,10])
 edit_button = sg.Button("Edit")
-
+complete_button = sg.Button("Complete")
+exit_button = sg.Button("Exit")
 
 window = sg.Window('My To-Do App', 
-                   layout=[[label], [input_box, add_button], [list_box, edit_button]], 
+                   layout=[[label], 
+                           [input_box, add_button], 
+                           [list_box, edit_button, complete_button],
+                           [exit_button]], 
                    font=('Helvetica', 20))
 # Adds the labels to the window and each list in 'layout' represents a row.
 while True:
@@ -43,12 +47,22 @@ while True:
             window['todos'].update(values=todos)
             # Updates the value that is replaced in the list. .update works on the Listbox
 
-        case 'todos':
-            window['todo'].update(value=values['todos'][0])
-            # Updates the inputbox to display what is clicked on. 
+        case "Complete":
+            todo_to_complete = values['todos'][0]
+            todos = functions.get_todos()
+            todos.remove(todo_to_complete)
+            # .remove() is a list method
+            functions.write_todos(todos)
+            window['todos'].update(values=todos)
+            # Replaces the items with the new updated list
+            window['todo'].update(value='')
+
+        case "Exit":
+            break
 
         case 'todos':
             window['todo'].update(value=values['todos'][0])
+            # Updates the inputbox to display what is clicked on. 
 
         case sg.WIN_CLOSED:
             break
